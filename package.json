@@ -26,7 +26,6 @@
   "dependencies": {
     "@tensorflow/tfjs": "1.7.4",
     "@tensorflow/tfjs-node": "1.7.4",
-    "@tensorflow/tfjs-node-gpu": "1.7.4",
     "bootstrap": "^4.4.1",
     "face-api.js": "^0.22.2",
     "jquery": "^3.5.1",
