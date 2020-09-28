@@ -1,0 +1,35 @@
+{
+  "name": "search-face-electron",
+  "version": "1.0.0",
+  "description": "simple search face on electron",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder",
+    "rebuild": "electron-rebuild"
+  },
+  "repository": "https://github.com/morozovsk/search-face-electron",
+  "keywords": [
+    "search",
+    "face",
+    "electron",
+    "prototype",
+    "demo"
+  ],
+  "author": "morozovsk",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^8.2.5",
+    "electron-builder": "^22.6.0",
+    "electron-rebuild": "^1.8.5"
+  },
+  "dependencies": {
+    "@tensorflow/tfjs": "1.7.4",
+    "@tensorflow/tfjs-node": "1.7.4",
+    "@tensorflow/tfjs-node-gpu": "1.7.4",
+    "bootstrap": "^4.4.1",
+    "face-api.js": "^0.22.2",
+    "jquery": "^3.5.1",
+    "sharp": "0.25.4"
+  }
+}
