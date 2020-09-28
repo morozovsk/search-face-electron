@@ -1,7 +1,7 @@
 {
   "name": "search-face-electron",
   "version": "1.0.0",
-  "description": "simple search face on electron",
+  "description": "simple search face app on electron",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
