@@ -5,8 +5,8 @@ const path = require('path')
 const sharp = require('sharp');
 const utils = require('./utils')
 
-var sourceDir = '/var/www/tfjs-examples/images/';
-var targetDir = '/var/www/tfjs-examples/images/1/';
+var sourceDir = '';
+var targetDir = '';
 //var fs = remote.require('fs')
 
 //document.getElementById("search").addEventListener('change',

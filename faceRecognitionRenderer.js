@@ -5,8 +5,8 @@ const path = require('path')
 const sharp = require('sharp');
 const utils = require('./utils')
 
-var file = '/var/www/tfjs-examples/images/bbt5.jpg';
-var dir = '/var/www/tfjs-examples/images/';
+var file = '';
+var dir = '';
 //var fs = remote.require('fs')
 
 //document.getElementById("search").addEventListener('change',
