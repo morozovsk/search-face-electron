@@ -2,7 +2,6 @@ const {clipboard, remote, ipcRenderer} = require('electron')
 const $ = require('jquery')
 const fs = require('fs')
 const path = require('path')
-const sharp = require('sharp');
 const utils = require('./utils')
 
 var sourceDir = '';

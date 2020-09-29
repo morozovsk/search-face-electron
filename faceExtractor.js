@@ -1,7 +1,5 @@
 const fs = require('fs');
 const faceapi = require('face-api.js');
-const tf = require('@tensorflow/tfjs-node');
-const sharp = require('sharp');
 const utils = require('./utils')
 
 module.exports = async function(sourceDir, targetDir) {
@@ -18,7 +16,7 @@ module.exports = async function(sourceDir, targetDir) {
 
         if (!fs.statSync(file).isFile()) continue;
 
-        let img = tf.node.decodeImage(fs.readFileSync(file));
+        let img = await utils.loadImage(file)
 
         // get all faces with descriptors
         let foundFacesWithDescriptors = await faceapi.detectAllFaces(img, new faceapi.SsdMobilenetv1Options({minConfidence: 0.5})).withFaceLandmarks().withFaceDescriptors();
@@ -26,8 +24,7 @@ module.exports = async function(sourceDir, targetDir) {
         var foundFaces = []
         for (let i in foundFacesWithDescriptors) {
             //console.log(box);
-            let img = sharp(file);
-            img.extract(utils.faceBox(foundFacesWithDescriptors[i].detection.box, await img.metadata())).toFile(targetDir+files[j].split('.')[0]+`_${i}.png`);
+            await utils.cropFaceToFile(file, foundFacesWithDescriptors[i].detection.box, targetDir+files[j].split('.')[0]+`_${i}.png`)
             foundFaces.push({
                 score: Math.round(foundFacesWithDescriptors[i].detection.score * 100),
                 file: files[j].split('.')[0]+`_${i}.png`,

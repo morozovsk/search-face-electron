@@ -1,6 +1,6 @@
 const fs = require('fs');
 const faceapi = require('face-api.js');
-const tf = require('@tensorflow/tfjs-node');
+const utils = require('./utils')
 
 module.exports = async function(searchedFile, searchedDir) {
     await faceapi.nets.ssdMobilenetv1.loadFromDisk('./weights');
@@ -14,7 +14,7 @@ module.exports = async function(searchedFile, searchedDir) {
     for (let j in files) {
         if (!fs.statSync(searchedDir + files[j]).isFile()) continue
         //console.log(files[j]);
-        let img = tf.node.decodeImage(fs.readFileSync(searchedDir + files[j]));
+        let img = await utils.loadImage(searchedDir + files[j])
 
         if (img.shape.length !== 3 || img.shape[2] !== 3) {
             console.log(img);
@@ -37,7 +37,7 @@ module.exports = async function(searchedFile, searchedDir) {
         }
     }
 
-    var img = tf.node.decodeImage(fs.readFileSync(searchedFile));
+    let img = await utils.loadImage(searchedFile)
     //console.log(img1)
 
     var searchedDetections = await faceapi.detectAllFaces(img, new faceapi.SsdMobilenetv1Options({minConfidence: 0.5})).withFaceLandmarks().withFaceDescriptors();

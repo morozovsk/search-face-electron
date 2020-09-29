@@ -2,7 +2,6 @@ const {clipboard, remote, ipcRenderer} = require('electron')
 const $ = require('jquery')
 const fs = require('fs')
 const path = require('path')
-const sharp = require('sharp');
 const utils = require('./utils')
 
 var file = '';
@@ -62,19 +61,16 @@ ipcRenderer.on('faceRecognition', async (event, bestMatches) => {
     let table = '<table class="table">'
     for (let i in bestMatches) {
         table += '<tr>'
-        let img = sharp(file);
-        let imageBuf = await img.extract(utils.faceBox(bestMatches[i].searchedFace.box, await img.metadata())).toBuffer();
-        table += `<td class="alert-info"><img src="data:image/png;base64,${imageBuf.toString('base64')}"><br>${bestMatches[i].searchedFace.score}%</td>`
+        let imageBuf = await utils.cropFaceToBase64(file, bestMatches[i].searchedFace.box);
+        table += `<td class="alert-info"><img src="${imageBuf}"><br>${bestMatches[i].searchedFace.score}%</td>`
 
         for (let j in bestMatches[i].foundFaces) {
             let foundFace = bestMatches[i].foundFaces[j]
-            let img = sharp(dir + foundFace.file);
-            let faceBox = utils.faceBox(foundFace.box, await img.metadata())
-            let imageBuf = await img.extract(faceBox).toBuffer();
-            let alert = foundFace.score === 100 ? 'dark': foundFace.score >= 50 ? 'success' : foundFace.score >= 40 ? 'warning' : 'danger'
+            let imageBuf = await utils.cropFaceToBase64(dir + foundFace.file, foundFace.box);
+                let alert = foundFace.score === 100 ? 'dark' : foundFace.score >= 50 ? 'success' : foundFace.score >= 40 ? 'warning' : 'danger'
             if (foundFace.score >= 30) {
-                table += `<td class="alert-${alert}"><img src="data:image/png;base64,${imageBuf.toString('base64')}"><br>${foundFace.score}%`
-                    +`<br><a target="_blank" href="${dir+foundFace.file}">${foundFace.file}</a></td>`
+                table += `<td class="alert-${alert}"><img src="${imageBuf}"><br>${foundFace.score}%`
+                    + `<br><a target="_blank" href="${dir + foundFace.file}">${foundFace.file}</a></td>`
             }
         }
         table += '</tr>'
