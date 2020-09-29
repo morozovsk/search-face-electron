@@ -1,5 +1,7 @@
 const tf = require('@tensorflow/tfjs');
 const jimp = require('jimp');
+const fs = require('fs');
+const nativeImage = require('electron').nativeImage;
 //const sharp = require('sharp');
 //require('@tensorflow/tfjs-backend-wasm');
 
@@ -29,16 +31,28 @@ module.exports.loadImage = async (file) => {
 };
 
 module.exports.cropFaceToFile = async (sourceFile, box, targetFile) => {
-    let img = await jimp.read(sourceFile);
-    let faceBox = this.faceBox(box, img.bitmap)
-    img.crop(faceBox.left, faceBox.top, faceBox.width, faceBox.height).write(targetFile);
+    let img = nativeImage.createFromPath(sourceFile);
+    let faceBox = this.faceBox(box, img.getSize())
+    fs.writeFileSync(targetFile, img.crop({x:faceBox.left, y:faceBox.top, width:faceBox.width, height:faceBox.height}).toPNG());
 }
 
 module.exports.cropFaceToBase64 = async (sourceFile, box) => {
+    let img = nativeImage.createFromPath(sourceFile);
+    let faceBox = this.faceBox(box, img.getSize())
+    return img.crop({x:faceBox.left, y:faceBox.top, width:faceBox.width, height:faceBox.height}).toDataURL();
+}
+
+/*module.exports.cropFaceToFile = async (sourceFile, box, targetFile) => {
+    let img = await jimp.read(sourceFile);
+    let faceBox = this.faceBox(box, img.bitmap)
+    img.crop(faceBox.left, faceBox.top, faceBox.width, faceBox.height).write(targetFile);
+}*/
+
+/*module.exports.cropFaceToBase64 = async (sourceFile, box) => {
     let img = await jimp.read(sourceFile);
     let faceBox = this.faceBox(box, img.bitmap)
     return imageBuf = img.crop(faceBox.left, faceBox.top, faceBox.width, faceBox.height).getBase64Async("image/png");
-}
+}*/
 
 /*module.exports.cropFaceToFile = async (sourceFile, box, targetFile) => {
     let img = sharp(sourceFile);
