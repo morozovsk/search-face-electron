@@ -24,11 +24,11 @@
     "electron-rebuild": "^1.8.5"
   },
   "dependencies": {
-    "@tensorflow/tfjs": "1.7.4",
-    "@tensorflow/tfjs-backend-wasm": "1.7.4",
+    "@opencv.js/utils": "^1.1.0",
+    "@opencv.js/wasm": "^4.4.0",
     "bootstrap": "^4.4.1",
     "face-api.js": "^0.22.2",
-    "jquery": "^3.5.1",
-    "jimp": "^0.16.1"
+    "jimp": "^0.16.1",
+    "jquery": "^3.5.1"
   }
 }

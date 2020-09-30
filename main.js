@@ -2,6 +2,9 @@
 const {app, BrowserWindow, ipcMain, Tray, Menu, clipboard, dialog, globalShortcut} = require('electron')
 const path = require('path')
 
+global.cv = require('@opencv.js/wasm');
+global.cvUtils = require('@opencv.js/utils');
+
 const faceRecognition = require('./faceRecognition')
 const faceExtractor = require('./faceExtractor')
 

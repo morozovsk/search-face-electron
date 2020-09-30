@@ -1,11 +1,6 @@
-const tf = require('@tensorflow/tfjs');
 const jimp = require('jimp');
 const fs = require('fs');
 const nativeImage = require('electron').nativeImage;
-//const sharp = require('sharp');
-//require('@tensorflow/tfjs-backend-wasm');
-
-//tf.setBackend('wasm');
 
 module.exports.faceBox = function(box, metadata) {
     return {
@@ -16,7 +11,7 @@ module.exports.faceBox = function(box, metadata) {
     }
 }
 
-module.exports.loadImage = async (file) => {
+/*module.exports.loadImage = async (file) => {
     //return tf.node.decodeImage(fs.readFileSync(file));
     return jimp.read(file).then(img => {
         const p = [];
@@ -28,7 +23,7 @@ module.exports.loadImage = async (file) => {
 
         return tf.tensor3d(p, [img.bitmap.height, img.bitmap.width, 3], 'int32');
     });
-};
+};*/
 
 module.exports.cropFaceToFile = async (sourceFile, box, targetFile) => {
     let img = nativeImage.createFromPath(sourceFile);
@@ -66,3 +61,40 @@ module.exports.cropFaceToBase64 = async (sourceFile, box) => {
     let imageBuf = await img.extract(faceBox).toBuffer();
     return imageBuf = 'data:image/png;base64,' + imageBuf.toString('base64')
 }*/
+
+module.exports.detectFaces = async (netDet, img) => {
+    let cv = require('@opencv.js/wasm');
+    var blob = cv.blobFromImage(img, 1, {width: 192, height: 144}, [104, 117, 123, 0], false, false);
+    netDet.setInput(blob);
+    var out = netDet.forward();
+
+    var faces = [];
+    for (var i = 0, n = out.data32F.length; i < n; i += 7) {
+        var confidence = out.data32F[i + 2];
+        var left = out.data32F[i + 3] * img.cols;
+        var top = out.data32F[i + 4] * img.rows;
+        var right = out.data32F[i + 5] * img.cols;
+        var bottom = out.data32F[i + 6] * img.rows;
+        left = Math.min(Math.max(0, left), img.cols - 1);
+        right = Math.min(Math.max(0, right), img.cols - 1);
+        bottom = Math.min(Math.max(0, bottom), img.rows - 1);
+        top = Math.min(Math.max(0, top), img.rows - 1);
+
+        if (confidence > 0.5 && left < right && top < bottom) {
+            faces.push({box:{x: left, y: top, width: right - left, height: bottom - top}, confidence})
+        }
+    }
+    blob.delete();
+    out.delete();
+    return faces;
+}
+
+module.exports.face2vec = (netRecogn, face) => {
+    var blob = cv.blobFromImage(face, 1.0 / 255, {width: 96, height: 96}, [0, 0, 0, 0], true, false)
+    netRecogn.setInput(blob);
+
+    var vec = netRecogn.forward();
+
+    blob.delete();
+    return vec;
+}
